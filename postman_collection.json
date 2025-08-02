@@ -1,0 +1,141 @@
+{
+    "info": {
+        "name": "ResolveIt API",
+        "_postman_id": "a2b3c4d5-e6f7-8g9h-i0j1-k2l3m4n5o6p7",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "Create User",
+            "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                    "mode": "formdata",
+                    "formdata": [
+                        {
+                            "key": "name",
+                            "value": "John Doe"
+                        },
+                        {
+                            "key": "age",
+                            "value": "30"
+                        },
+                        {
+                            "key": "gender",
+                            "value": "male"
+                        },
+                        {
+                            "key": "street",
+                            "value": "123 Main St"
+                        },
+                        {
+                            "key": "city",
+                            "value": "Springfield"
+                        },
+                        {
+                            "key": "zip_code",
+                            "value": "12345"
+                        },
+                        {
+                            "key": "email",
+                            "value": "john@example.com"
+                        },
+                        {
+                            "key": "phone",
+                            "value": "1234567890"
+                        },
+                        {
+                            "key": "photo",
+                            "type": "file",
+                            "src": "path/to/photo.jpg"
+                        }
+                    ]
+                },
+                "url": "{{base_url}}/users/"
+            }
+        },
+        {
+            "name": "Create Case",
+            "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                    "mode": "formdata",
+                    "formdata": [
+                        {
+                            "key": "user_id",
+                            "value": "1"
+                        },
+                        {
+                            "key": "type",
+                            "value": "family"
+                        },
+                        {
+                            "key": "description",
+                            "value": "Family dispute"
+                        },
+                        {
+                            "key": "opposite_party_name",
+                            "value": "Jane Doe"
+                        },
+                        {
+                            "key": "opposite_party_phone",
+                            "value": "0987654321"
+                        },
+                        {
+                            "key": "opposite_party_address",
+                            "value": "456 Elm St"
+                        },
+                        {
+                            "key": "is_pending_in_court",
+                            "value": "false"
+                        },
+                        {
+                            "key": "proof_upload",
+                            "type": "file",
+                            "src": "path/to/proof.pdf"
+                        }
+                    ]
+                },
+                "url": "{{base_url}}/cases/"
+            }
+        },
+        {
+            "name": "Update Case Status",
+            "request": {
+                "method": "PATCH",
+                "header": [],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\"status\": \"awaiting_response\"}",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    }
+                },
+                "url": "{{base_url}}/cases/1/status"
+            }
+        },
+        {
+            "name": "Get Cases (Admin)",
+            "request": {
+                "method": "GET",
+                "header": [
+                    {
+                        "key": "x-api-key",
+                        "value": "dummy-admin-token"
+                    }
+                ],
+                "url": "{{base_url}}/admin/cases/"
+            }
+        }
+    ],
+    "variable": [
+        {
+            "key": "base_url",
+            "value": "http://localhost:8000"
+        }
+    ]
+}

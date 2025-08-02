@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.venv/
+pip-log.txt
+pip-delete-this-arg.txt
+.tox/
+.coverage
+.mypy_cache/
+.pytest_cache/
+.ipynb_checkpoints/
+*.egg-info/
+.installed.cfg
+*.egg
+.env
+# Editor/IDE specific
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+*.DS_Store # macOS
+
+# OS generated files
+.localized
+.Trashes
+
+# FastAPI/Uvicorn specific
+.uvicorn_state.json # If uvicorn creates this
