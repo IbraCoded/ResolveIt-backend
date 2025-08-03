@@ -1,6 +1,7 @@
 import json
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form
 from sqlalchemy.orm import Session
+from sqlalchemy import or_
 from app.db.session import get_db
 from app.models.case import Case
 from app.models.user import User
@@ -13,25 +14,6 @@ from typing import List, Optional
 from app.websocket_manager import manager
 
 router = APIRouter()
-
-# create case route
-# @router.post("/", response_model=CaseResponse)
-# async def create_case(
-#     case: CaseCreate,
-#     file: UploadFile = File(None),
-#     db: Session = Depends(get_db),
-#     current_user: User = Depends(get_current_user)
-#     ):
-#     if file:
-#         if file.size > 10 * 1024 * 1024:  # 10MB limit
-#             raise HTTPException(status_code=400, detail="Invalid file type or size")
-#         case.proof_upload = await save_file(file, "proofs")
-    
-#     db_case = Case(**case.model_dump(), user_id=current_user.id)
-#     db.add(db_case)
-#     db.commit()
-#     db.refresh(db_case)
-#     return db_case
 
 
 @router.post("/", response_model=CaseResponse)
@@ -65,11 +47,14 @@ async def create_case(
         db.refresh(db_notification)
         await manager.send_personal_message(
             json.dumps({
-                "type": "info",
-                "title": "New Case assigned",
-                "case_id": db_case.id,
-                "message": message,
-                "from_user": current_user.name
+            "id": db_notification.id,
+            "type": db_notification.type,
+            "title": db_notification.title,
+            "message": db_notification.message,
+            "created_at": db_notification.created_at.isoformat(),
+            "is_read": db_notification.is_read,
+            "case_id": db_case.id,
+            "from_user": current_user.name
             }),
             user_id=case.opposite_party_user_id
         )
@@ -104,9 +89,12 @@ async def get_cases(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
     ):
-    db_cases = db.query(Case).filter(Case.user_id == current_user.id).all()
-    if not db_cases:
-        return {"cases": []}
+    db_cases = db.query(Case).filter(
+    or_(
+        Case.user_id == current_user.id,
+        Case.opposite_party_user_id == current_user.id
+    )
+    ).all()    
     return {"cases": db_cases}
 
 
