@@ -12,10 +12,10 @@ class CaseType(str, Enum):
 
 class CaseStatus(str, Enum):
     REGISTERED = "registered"
-    AWAITING_RESPONSE = "awaiting_response"
+    AWAITING_RESPONSE = "awaiting response"
     ACCEPTED = "accepted"
     PANEL_CREATED = "panel_created"
-    MEDIATION_IN_PROGRESS = "mediation_in_progress"
+    MEDIATION_IN_PROGRESS = "mediation in progress"
     RESOLVED = "resolved"
     UNRESOLVED = "unresolved"
     

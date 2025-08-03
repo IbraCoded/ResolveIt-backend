@@ -18,7 +18,6 @@ class CaseBase(BaseModel):
     court_or_police_name: Optional[str] = None
     case_or_fir_number: Optional[str] = None
     # witness_list: Optional[str] = None
-    creator_user: str
 
 class CaseWitnesses():
     witness_list: Optional[str] = None
@@ -38,8 +37,8 @@ class CaseForm(CaseCreate):
         opposite_party_name: str = Form(...),
         opposite_party_phone: str = Form(...),
         opposite_party_address: str = Form(...),
-        opposite_party_user_id: Optional[int] = Form(...),
-        opposite_party_email: Optional[EmailStr] = Form(...),
+        opposite_party_user_id: Optional[int] = Form(None),
+        opposite_party_email: Optional[EmailStr] = Form(None),
         is_pending_in_court: bool = False,
         court_or_police_name: Optional[str] = Form(...),
         case_or_fir_number: Optional[str] = Form(...),
@@ -64,7 +63,8 @@ class CaseResponse(CaseBase, CaseWitnesses):
     id: int
     user_id: int
     proof_upload: Optional[str] = None
-    status: CaseStatus
+    creator_status: CaseStatus
+    opposite_party_status: CaseStatus
     created_at: datetime
     updated_at: datetime
     
