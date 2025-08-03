@@ -28,6 +28,9 @@ pip-delete-this-arg.txt
 # OS generated files
 .localized
 .Trashes
+app/resolveit.db
+*.sqlite3
+*.db
 
 # FastAPI/Uvicorn specific
 .uvicorn_state.json # If uvicorn creates this
