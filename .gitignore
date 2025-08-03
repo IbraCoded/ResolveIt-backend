@@ -31,6 +31,7 @@ pip-delete-this-arg.txt
 app/resolveit.db
 *.sqlite3
 *.db
+uploads/
 
 # FastAPI/Uvicorn specific
 .uvicorn_state.json # If uvicorn creates this
