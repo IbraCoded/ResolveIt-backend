@@ -12,6 +12,7 @@ class Case(Base):
     type = Column(Enum(CaseType), nullable=False)
     description = Column(String, nullable=False)
     opposite_party_user_id = Column(Integer, ForeignKey("users.id"), nullable=True)
+    opposite_party_email = Column(String, nullable=True)
     opposite_party_name = Column(String, nullable=False)
     opposite_party_phone = Column(String, nullable=False)
     opposite_party_address = Column(String, nullable=False)

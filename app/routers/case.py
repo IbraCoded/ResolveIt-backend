@@ -1,3 +1,4 @@
+import json
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form
 from sqlalchemy.orm import Session
 from app.db.session import get_db
@@ -44,27 +45,38 @@ async def create_case(
         if proof.size > 10 * 1024 * 1024:  # 10MB limit
             raise HTTPException(status_code=400, detail="Invalid file type or size")
         case.proof_upload = await save_file(proof, "proofs")
+    
     if not case.opposite_party_user_id and not case.opposite_party_email:
+        print("No opposing party provided")
         raise HTTPException(status_code=400, detail="You must provide either an existing user as an opposing party of an email to invite the party")
-    if case.opposite_party_email:
-        # send an invite email to opposing party
-        pass
+    
     if case.is_pending_in_court and (not case.court_or_police_name or not case.case_or_fir_number):
         raise HTTPException(status_code=400, detail="Court or police name and case number is required if case is pending in court")
-    db_case = Case(**case.model_dump(), creator_user=current_user.id)
+    db_case = Case(**case.model_dump(), user_id=current_user.id)
     db.add(db_case)
     db.commit()
     db.refresh(db_case)
 
-    
-    message = f"You've been added as the opposite party to a new case by {current_user.name}"
-    db_notification = Notification(user_id=case.opposite_party_user_id, message=message)
-    db.add(db_notification)
-    db.commit()
-    db.refresh(db_notification)
-    await manager.send_personal_message(
-        f"You have been added as the opposite party Case #{db_case.id} from user {current_user.name}"
-    )
+    if case.opposite_party_user_id:
+        message = f"You've been added as the opposite party to a new case by {current_user.name}"
+        db_notification = Notification(user_id=case.opposite_party_user_id, message=message)
+        db.add(db_notification)
+        db.commit()
+        db.refresh(db_notification)
+        await manager.send_personal_message(
+            json.dumps({
+                "type": "info",
+                "title": "New Case assigned",
+                "case_id": db_case.id,
+                "message": message,
+                "from_user": current_user.name
+            }),
+            user_id=case.opposite_party_user_id
+        )
+    elif case.opposite_party_email:
+        # send an invitation mail to the user
+        print("Send an email to the email service")
+        pass
     return db_case
 
 
