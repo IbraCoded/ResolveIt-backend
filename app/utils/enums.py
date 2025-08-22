@@ -19,6 +19,10 @@ class CaseStatus(str, Enum):
     RESOLVED = "resolved"
     UNRESOLVED = "unresolved"
     
+    # add a new status for panel selection stage. I feel like this makes
+    # more sense than keeping it as ACCEPTED
+    PANEL_SELECTION = "panel selection"
+    
     # added for the opposite party
     REQUESTED = "requested"
     REJECTED = "rejected"
@@ -28,3 +32,8 @@ class NotificationType(str, Enum):
     SUCCESS = "success"
     WARNING = "warning"
     ERROR = "error"
+
+class PanelRole(str, Enum):
+    LAWYER = "lawyer"
+    SCHOLAR = "religious_scholar"
+    ELDER = "reputable_member"

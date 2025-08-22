@@ -7,7 +7,7 @@ from app.models.case import Case
 from app.models.user import User
 from app.models.notification import Notification
 from app.schemas.case import CaseList, CaseResponse, CaseUpdateStatus, CaseForm
-from app.services.case_service import update_case_status
+from app.services.case_service import notify_case_status_change, update_case_status
 from app.utils.file_upload import save_file
 from app.auth.dependencies import get_current_user
 from typing import List, Optional
@@ -66,7 +66,7 @@ async def create_case(
 
 
 # update case route
-@router.patch("/{id}/status", response_model=CaseResponse)
+@router.put("/{id}/status", response_model=CaseResponse)
 async def update_case(
     id: int, status_update: CaseUpdateStatus,
     db: Session = Depends(get_db),
@@ -75,16 +75,17 @@ async def update_case(
     db_case = db.query(Case).filter(Case.id == id).first()
     if not db_case:
         raise HTTPException(status_code=404, detail="Case not found")
-    if db_case.user_id != current_user.id:
+    if db_case.user_id != current_user.id and db_case.opposite_party_user_id != current_user.id:
         raise HTTPException(status_code=403, detail="Not authorized to update this case")
     
     db_case = update_case_status(db, db_case, status_update.status)
     db.commit()
     db.refresh(db_case)
+    await notify_case_status_change(db, db_case, status_update.status, current_user)
     return db_case
 
 # get all a user's cases
-@router.get("/user", response_model=CaseList)
+@router.get("/", response_model=CaseList)
 async def get_cases(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
