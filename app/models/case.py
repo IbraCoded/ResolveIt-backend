@@ -28,6 +28,7 @@ class Case(Base):
     # Relationships
     creator_user = relationship("User", back_populates="created_cases", foreign_keys=[user_id])
     opposite_party_user = relationship("User", back_populates="accused_cases", foreign_keys=[opposite_party_user_id])    
+    panel_nominations = relationship("PanelNomination", back_populates="case")
     
     
     # case status tracking for each party
