@@ -3,18 +3,18 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.routers import user, case, admin
 from app.db.session import engine
 from app.db.base import Base
-from app.models.user import User
-from app.models.case import Case
 from app.routers.auth import router as auth_router
 from app.routers.web_socket import router as websocket_routes
 from app.routers.notification import router as notification_routes 
+
+import app.models 
 
 app = FastAPI(title="ResolveIt Backend")
 
 # CORS setup
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],  # Adjust for frontend URL
+    allow_origins=["http://localhost:3000"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
